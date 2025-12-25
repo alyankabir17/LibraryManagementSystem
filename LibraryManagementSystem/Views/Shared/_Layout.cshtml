@@ -1,0 +1,180 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - LibraryManagementSystem</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/LibraryManagementSystem.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-book-reader me-2"></i>Library Management
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        @if (User.Identity?.IsAuthenticated ?? false)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">
+                                    <i class="fas fa-home me-1"></i>Home
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Books" asp-action="Index">
+                                    <i class="fas fa-book me-1"></i>Books
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="Members" asp-action="Index">
+                                    <i class="fas fa-users me-1"></i>Members
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="issueRecordsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-exchange-alt me-1"></i>Issue Records
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="issueRecordsDropdown">
+                                    <li><a class="dropdown-item" asp-controller="IssueRecords" asp-action="Index">
+                                        <i class="fas fa-list me-2"></i>All Records
+                                    </a></li>
+                                    <li><a class="dropdown-item" asp-controller="IssueRecords" asp-action="Issue">
+                                        <i class="fas fa-book me-2"></i>Issue Book
+                                    </a></li>
+                                    <li><a class="dropdown-item" asp-controller="IssueRecords" asp-action="SearchMember">
+                                        <i class="fas fa-search me-2"></i>Return Book
+                                    </a></li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (User.Identity?.IsAuthenticated ?? false)
+                        {
+                            @inject Microsoft.AspNetCore.Identity.UserManager<LibraryManagementSystem.Models.ApplicationUser> UserManager
+                            
+                            var currentUser = await UserManager.GetUserAsync(User);
+                            var displayName = currentUser?.FullName ?? User.Identity.Name ?? "User";
+                            
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user-circle me-1"></i>
+                                    @displayName
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <li>
+                                        <a class="dropdown-item disabled" href="#" class="disabled">
+                                            <i class="fas fa-envelope me-2"></i>@currentUser?.Email
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                            <button type="submit" class="dropdown-item text-danger">
+                                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Account" asp-action="Login">
+                                    <i class="fas fa-sign-in-alt me-1"></i>Login
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Account" asp-action="Register">
+                                    <i class="fas fa-user-plus me-1"></i>Register
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container">
+        <main role="main" class="pb-3 main-content">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-white">
+        <div class="container">
+            <div class="row py-4">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-book-reader me-2"></i>Library Management System</h5>
+                    <p class="mb-0">Manage your library efficiently with our modern system</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    &copy; 2025 - LibraryManagementSystem
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    @if (User.Identity?.IsAuthenticated ?? false)
+    {
+        <script>
+            // Session timeout warning
+            var sessionTimeout = 20 * 60 * 1000; // 20 minutes in milliseconds
+            var warningTime = 18 * 60 * 1000; // Show warning at 18 minutes
+            
+            var sessionTimer;
+            var warningTimer;
+            
+            function resetTimers() {
+                clearTimeout(sessionTimer);
+                clearTimeout(warningTimer);
+                
+                warningTimer = setTimeout(showWarning, warningTime);
+                sessionTimer = setTimeout(function() {
+                    window.location.href = '@Url.Action("Logout", "Account")';
+                }, sessionTimeout);
+            }
+            
+            function showWarning() {
+                var warningDiv = document.createElement('div');
+                warningDiv.className = 'alert alert-warning alert-dismissible fade show session-warning';
+                warningDiv.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i><strong>Session Expiring!</strong> Your session will expire in 2 minutes due to inactivity.<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+                document.body.appendChild(warningDiv);
+                
+                setTimeout(function() {
+                    if (warningDiv && warningDiv.parentNode) {
+                        warningDiv.remove();
+                    }
+                }, 120000); // Remove after 2 minutes
+            }
+            
+            // Reset timers on user activity
+            document.addEventListener('mousemove', resetTimers);
+            document.addEventListener('keypress', resetTimers);
+            document.addEventListener('click', resetTimers);
+            document.addEventListener('scroll', resetTimers);
+            
+            // Initialize timers
+            resetTimers();
+        </script>
+    }
+    
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

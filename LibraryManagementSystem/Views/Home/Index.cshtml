@@ -1,0 +1,332 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    var totalBooks = ViewBag.TotalBooks as int? ?? 0;
+    var totalMembers = ViewBag.TotalMembers as int? ?? 0;
+    var totalIssued = ViewBag.TotalIssued as int? ?? 0;
+    var availableBooks = ViewBag.AvailableBooks as int? ?? 0;
+    var overdueBooks = ViewBag.OverdueBooks as int? ?? 0;
+    var totalPendingFines = ViewBag.TotalPendingFines as decimal? ?? 0;
+    var recentBooks = ViewBag.RecentBooks as List<LibraryManagementSystem.Models.Book> ?? new List<LibraryManagementSystem.Models.Book>();
+    var recentMembers = ViewBag.RecentMembers as List<LibraryManagementSystem.Models.Member> ?? new List<LibraryManagementSystem.Models.Member>();
+    var recentIssues = ViewBag.RecentIssues as List<LibraryManagementSystem.Models.IssueRecord> ?? new List<LibraryManagementSystem.Models.IssueRecord>();
+}
+
+<div class="container-fluid mt-4 mb-5">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card border-0 shadow-lg" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-body text-white p-4">
+                    <h1 class="display-4 mb-2">
+                        <i class="fas fa-chart-line me-3"></i>Library Dashboard
+                    </h1>
+                    <p class="lead mb-0">Welcome to your Library Management System overview</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <!-- Total Books -->
+        <div class="col-md-4 col-lg-2 mb-3">
+            <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                <div class="card-body text-white text-center">
+                    <i class="fas fa-book fa-3x mb-3"></i>
+                    <h2 class="display-5 fw-bold">@totalBooks</h2>
+                    <p class="mb-0">Total Books</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Available Books -->
+        <div class="col-md-4 col-lg-2 mb-3">
+            <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                <div class="card-body text-white text-center">
+                    <i class="fas fa-check-circle fa-3x mb-3"></i>
+                    <h2 class="display-5 fw-bold">@availableBooks</h2>
+                    <p class="mb-0">Available</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Members -->
+        <div class="col-md-4 col-lg-2 mb-3">
+            <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);">
+                <div class="card-body text-white text-center">
+                    <i class="fas fa-users fa-3x mb-3"></i>
+                    <h2 class="display-5 fw-bold">@totalMembers</h2>
+                    <p class="mb-0">Members</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Currently Issued -->
+        <div class="col-md-4 col-lg-2 mb-3">
+            <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);">
+                <div class="card-body text-white text-center">
+                    <i class="fas fa-book-reader fa-3x mb-3"></i>
+                    <h2 class="display-5 fw-bold">@totalIssued</h2>
+                    <p class="mb-0">Issued</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Overdue Books -->
+        <div class="col-md-4 col-lg-2 mb-3">
+            <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);">
+                <div class="card-body text-white text-center">
+                    <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                    <h2 class="display-5 fw-bold">@overdueBooks</h2>
+                    <p class="mb-0">Overdue</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Fines -->
+        <div class="col-md-4 col-lg-2 mb-3">
+            <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);">
+                <div class="card-body text-white text-center">
+                    <i class="fas fa-money-bill-wave fa-3x mb-3"></i>
+                    <h2 class="display-6 fw-bold">Rs. @totalPendingFines.ToString("F0")</h2>
+                    <p class="mb-0">Pending Fines</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity Section -->
+    <div class="row">
+        <!-- Recent Books -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-book me-2"></i>Recently Added Books
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    @if (recentBooks.Any())
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var book in recentBooks)
+                            {
+                                <div class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1 text-primary">@book.Title</h6>
+                                            <small class="text-muted">
+                                                <i class="fas fa-user-edit me-1"></i>@book.Author
+                                            </small>
+                                        </div>
+                                        <span class="badge @(book.Quantity > 0 ? "bg-success" : "bg-danger") badge-lg">
+                                            @book.Quantity in stock
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="card-footer text-center">
+                            <a asp-controller="Books" asp-action="Index" class="btn btn-sm btn-primary">
+                                <i class="fas fa-arrow-right me-2"></i>View All Books
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-4 text-center text-muted">
+                            <i class="fas fa-book fa-3x mb-3"></i>
+                            <p class="mb-0">No books added yet</p>
+                            <a asp-controller="Books" asp-action="Create" class="btn btn-primary mt-3">
+                                <i class="fas fa-plus me-2"></i>Add Your First Book
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Members -->
+        <div class="col-lg-6 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-success text-white py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-users me-2"></i>Recently Registered Members
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    @if (recentMembers.Any())
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var member in recentMembers)
+                            {
+                                <div class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-circle bg-success text-white me-3" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold;">
+                                                @member.Name.Substring(0, 1).ToUpper()
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-1">@member.Name</h6>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-id-card me-1"></i>@member.UniversityId
+                                                </small>
+                                            </div>
+                                        </div>
+                                        <small class="text-muted">
+                                            <i class="fas fa-envelope me-1"></i>@member.Email
+                                        </small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="card-footer text-center">
+                            <a asp-controller="Members" asp-action="Index" class="btn btn-sm btn-success">
+                                <i class="fas fa-arrow-right me-2"></i>View All Members
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-4 text-center text-muted">
+                            <i class="fas fa-users fa-3x mb-3"></i>
+                            <p class="mb-0">No members registered yet</p>
+                            <a asp-controller="Members" asp-action="Create" class="btn btn-success mt-3">
+                                <i class="fas fa-plus me-2"></i>Add Your First Member
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Issue Records -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-info text-white py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-exchange-alt me-2"></i>Recent Issue Activity
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    @if (recentIssues.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Book</th>
+                                        <th>Member</th>
+                                        <th>Issue Date</th>
+                                        <th>Due Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var issue in recentIssues)
+                                    {
+                                        var isOverdue = issue.ReturnDate == null && DateTime.Now > issue.DueDate;
+                                        <tr>
+                                            <td class="fw-bold">@issue.Book?.Title</td>
+                                            <td>@issue.Member?.Name</td>
+                                            <td>
+                                                <small>
+                                                    <i class="far fa-calendar me-1"></i>
+                                                    @issue.IssueDate.ToString("dd MMM yyyy")
+                                                </small>
+                                            </td>
+                                            <td>
+                                                <small>
+                                                    <i class="far fa-calendar-check me-1"></i>
+                                                    @issue.DueDate.ToString("dd MMM yyyy")
+                                                </small>
+                                            </td>
+                                            <td>
+                                                @if (issue.ReturnDate.HasValue)
+                                                {
+                                                    <span class="badge bg-success">
+                                                        <i class="fas fa-check-circle me-1"></i>Returned
+                                                    </span>
+                                                }
+                                                else if (isOverdue)
+                                                {
+                                                    <span class="badge bg-danger">
+                                                        <i class="fas fa-exclamation-triangle me-1"></i>Overdue
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-primary">
+                                                        <i class="fas fa-clock me-1"></i>Active
+                                                    </span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a asp-controller="IssueRecords" asp-action="Index" class="btn btn-sm btn-info">
+                                <i class="fas fa-arrow-right me-2"></i>View All Issue Records
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="p-4 text-center text-muted">
+                            <i class="fas fa-exchange-alt fa-3x mb-3"></i>
+                            <p class="mb-0">No issue records yet</p>
+                            <a asp-controller="IssueRecords" asp-action="Issue" class="btn btn-info mt-3">
+                                <i class="fas fa-plus me-2"></i>Issue Your First Book
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-dark text-white py-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <a asp-controller="Books" asp-action="Create" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-plus-circle fa-2x d-block mb-2"></i>
+                                Add New Book
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-controller="Members" asp-action="Create" class="btn btn-success btn-lg w-100">
+                                <i class="fas fa-user-plus fa-2x d-block mb-2"></i>
+                                Add New Member
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-controller="IssueRecords" asp-action="Issue" class="btn btn-warning btn-lg w-100">
+                                <i class="fas fa-book fa-2x d-block mb-2"></i>
+                                Issue Book
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a asp-controller="IssueRecords" asp-action="SearchMember" class="btn btn-info btn-lg w-100">
+                                <i class="fas fa-undo-alt fa-2x d-block mb-2"></i>
+                                Return Book
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

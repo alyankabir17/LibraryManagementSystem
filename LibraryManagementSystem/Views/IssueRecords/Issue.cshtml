@@ -1,0 +1,138 @@
+@model LibraryManagementSystem.Models.IssueRecord
+
+@{
+    ViewData["Title"] = "Issue Book";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white py-3">
+                    <h3 class="mb-0">
+                        <i class="fas fa-book-reader me-2"></i>Issue Book to Member
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="alert alert-info" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Note:</strong> Books must be returned within <strong>14 days</strong>. 
+                        A fine of <strong>Rs. 5 per day</strong> will be charged for late returns.
+                    </div>
+
+                    <form asp-action="Issue">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                        
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <div class="form-floating mb-3">
+                                    <select asp-for="BookId" class="form-select" asp-items="ViewBag.BookId" id="bookSelect">
+                                        <option value="">-- Select a Book --</option>
+                                    </select>
+                                    <label asp-for="BookId">
+                                        <i class="fas fa-book me-2"></i>Select Book
+                                    </label>
+                                    <span asp-validation-for="BookId" class="text-danger small"></span>
+                                    <div class="form-text">Only books with available stock are shown</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-floating mb-3">
+                                    <select asp-for="MemberId" class="form-select" asp-items="ViewBag.MemberId" id="memberSelect">
+                                        <option value="">-- Select a Member --</option>
+                                    </select>
+                                    <label asp-for="MemberId">
+                                        <i class="fas fa-user me-2"></i>Select Member
+                                    </label>
+                                    <span asp-validation-for="MemberId" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="IssueDate" class="form-control" type="date" id="issueDate" />
+                                    <label asp-for="IssueDate">
+                                        <i class="fas fa-calendar-alt me-2"></i>Issue Date
+                                    </label>
+                                    <span asp-validation-for="IssueDate" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="DueDate" class="form-control" type="date" id="dueDate" readonly />
+                                    <label asp-for="DueDate">
+                                        <i class="fas fa-calendar-check me-2"></i>Due Date
+                                    </label>
+                                    <span asp-validation-for="DueDate" class="text-danger small"></span>
+                                    <div class="form-text">Automatically set to 14 days from issue date</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card bg-light mt-3">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <i class="fas fa-info-circle me-2"></i>Return Policy
+                                </h6>
+                                <ul class="mb-0">
+                                    <li>Books should be returned by the due date</li>
+                                    <li>Late returns incur a fine of Rs. 5 per day</li>
+                                    <li>Members can return books before the due date</li>
+                                    <li>Fines must be paid at the time of return</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-check me-2"></i>Issue Book
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        document.getElementById('issueDate').addEventListener('change', function() {
+            var issueDate = new Date(this.value);
+            var dueDate = new Date(issueDate);
+            dueDate.setDate(dueDate.getDate() + 14);
+            
+            var year = dueDate.getFullYear();
+            var month = String(dueDate.getMonth() + 1).padStart(2, '0');
+            var day = String(dueDate.getDate()).padStart(2, '0');
+            
+            document.getElementById('dueDate').value = year + '-' + month + '-' + day;
+        });
+
+        // Set default dates on page load
+        window.addEventListener('load', function() {
+            var today = new Date();
+            var year = today.getFullYear();
+            var month = String(today.getMonth() + 1).padStart(2, '0');
+            var day = String(today.getDate()).padStart(2, '0');
+            
+            document.getElementById('issueDate').value = year + '-' + month + '-' + day;
+            
+            var dueDate = new Date(today);
+            dueDate.setDate(dueDate.getDate() + 14);
+            var dueYear = dueDate.getFullYear();
+            var dueMonth = String(dueDate.getMonth() + 1).padStart(2, '0');
+            var dueDay = String(dueDate.getDate()).padStart(2, '0');
+            
+            document.getElementById('dueDate').value = dueYear + '-' + dueMonth + '-' + dueDay;
+        });
+    </script>
+}

@@ -1,0 +1,33 @@
+@model LibraryManagementSystem.Models.Book
+
+@{
+    ViewData["Title"] = "Book Details";
+}
+
+<h1>Book Details</h1>
+
+<div>
+    <h4>Book Information</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Title)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Title)</dd>
+        
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Author)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Author)</dd>
+        
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ISBN)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.ISBN)</dd>
+        
+        <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Quantity)</dt>
+        <dd class="col-sm-9">
+            <span class="badge @(Model.Quantity > 0 ? "bg-success" : "bg-danger")">
+                @Html.DisplayFor(model => model.Quantity)
+            </span>
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.BookId" class="btn btn-warning">Edit</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
